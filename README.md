@@ -1,1 +1,103 @@
-# D2O_analysis_v1
+# D2O Analysis Pipeline (Map/Reduce on SLURM)
+
+This repository contains a Python-based analysis pipeline for the COHERENT D₂O detector. The pipeline processes *processed ROOT files* (PMT + SiPM waveform products) to extract key physics quantities such as total photoelectrons (P.E.), correlated time differences (Δt), and multiplicity. It also produces per-run QA plots, low-light SPE calibration fits, and global (merged) summary plots.
+
+## Pipeline overview
+
+The workflow has two stages:
+
+1. **Parallel Processing (Map phase)**  
+   The requested run range is split into SLURM sub-jobs. Each sub-job loops over runs, applies calibrations/cuts, and writes intermediate binary outputs (`.npy/.pkl/.json`) plus per-run debug plots.
+
+2. **Aggregation (Reduce phase)**  
+   A master job merges all sub-job outputs into global arrays/histograms and produces publication-ready plots in `MASTER_RESULTS/`.
+
+## Main scripts
+
+- `config.py`  
+  Single source of truth for input paths, cut values, histogram binning, and optional modules (thin-veto / BRN).
+
+- `submit_veto.sh`  
+  End-to-end driver:
+  - creates a timestamped `analysis_*` directory,
+  - snapshots code into `analysis_*/code/`,
+  - submits worker sub-jobs for the run range,
+  - submits the master aggregation with SLURM dependency (`afterok`).
+
+- `Read_Cut_Hist_D2O_multi_veto.py`  
+  Worker (map step). Processes runs and produces:
+  - per-run QA plots (correlation maps, cut histograms, low-light fits),
+  - per-subjob aggregated intermediate files for the master reducer.
+
+- `aggregate_master_veto.py`  
+  Master (reduce step). Loads all `subjob_*` outputs and generates final plots + global bookkeeping.
+
+- `submit_aggregation_only.sh`  
+  Utility: re-run **only** the aggregation step on an existing `analysis_*` directory (useful for adjusting binning/fit windows/plot styling without reprocessing runs).
+
+## Expected output structure
+
+Running `submit_veto.sh` produces:
+
+analysis_<start>-<end><M1/M2><timestamp>/
+code/ # snapshot of python scripts (reproducibility)
+subjob_<job_start>-<job_end>/
+run<run><timestamp>/
+time_length.json
+histograms/
+cuthist/
+lowlight/
+aggregated_delta_t.npy
+aggregated_total_pe.npy
+aggregated_multiplicity.npy
+aggregated_sipm_area_array.pkl
+aggregated_pe_trig2.pkl
+aggregated_pe_trig2_or_34.pkl
+aggregated_low_light_hists.pkl
+aggregated_thin_veto_hists.pkl # if enabled
+aggregated_brn_channel_data.pkl # if enabled
+subjob_time_length.json
+MASTER_RESULTS/
+aggregated_delta_t<M1/M2>.png
+aggregated_total_pe_<M1/M2>.png
+total_time_length.json
+run_info.txt
+<label>_<M1/M2>veto_efficiency_master.png (+ .pkl)
+<label><M1/M2>low_light_fits.png (+ .pkl)
+<label><M1/M2>_sipm_area_histograms.png (+ .pkl)
+(optional) BRN master plots
+
+
+## Setup
+
+### Prerequisites
+- A SLURM environment (jobs are submitted via `sbatch`).
+- Python 3 with typical dependencies (`numpy`, `pandas`, `matplotlib`, `scipy`, `uproot`, etc.).
+  - On `ernest`, the default Python 3 is `/usr/bin/python3` (unless you activate a conda environment).
+- Access to the processed ROOT files for the selected phase (M1 or M2).
+
+### Data transfer (ORNL → MEG)
+We recommend using **Globus** to transfer D₂O data from ORNL `phylogin1` to MEG.
+
+- Becca’s LabArchives note:  
+  [Transfer terabytes of data](https://mynotebook.labarchives.com/MTE1MjgwMy42fDg4Njc3Mi84ODY3NzIvTm90ZWJvb2svMjM4NzgwODQ4MnwyOTI2MzQ3LjU5OTk5OTk5OTY=/page/2052467-32)
+
+- Globus authentication uses your ORNL Guest Portal credentials:  
+  https://guest.ornl.gov/
+
+- As of **Jan 5, 2026**, the D₂O data path on ORNL `phylogin1` is:
+/data41/coherent/data/d2o/
+
+## How to run
+
+### A) Full processing + aggregation (recommended for new run ranges)
+Use this when running a **new** run range, or when you changed logic affecting per-run derived data/cuts.
+
+1. Edit `config.py` to point to your data directories (M1/M2) and adjust cuts/bins if needed.
+2. Edit `submit_veto.sh`:
+ - `SCRIPT_DIR` (code path)
+ - `start_run`, `end_run`, `M1_or_M2`, `njobs`
+ - output base directory
+3. Submit:
+ ```bash
+ sh submit_veto.sh
