@@ -58,7 +58,7 @@ We recommend using **Globus** to transfer D₂O data from ORNL `phylogin1` to ME
 
 ## How to run
 
-### A) Full processing + aggregation (recommended for new run ranges)
+### Full processing + aggregation (recommended for new run ranges)
 Use this when running a **new** run range, or when you changed logic affecting per-run derived data/cuts.
 
 1. Edit `config.py` to point to your data directories (M1/M2) and adjust cuts/bins if needed.
