@@ -1,4 +1,4 @@
-# D2O Analysis Pipeline (Map/Reduce on SLURM)
+# D2O Analysis Pipeline 
 
 This repository contains a Python-based analysis pipeline for the COHERENT D₂O detector. The pipeline processes *processed ROOT files* (PMT + SiPM waveform products) to extract key physics quantities such as total photoelectrons (P.E.), correlated time differences (Δt), and multiplicity. It also produces per-run QA plots, low-light SPE calibration fits, and global (merged) summary plots.
 
