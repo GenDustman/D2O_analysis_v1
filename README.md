@@ -68,11 +68,12 @@ Use this when running a **new** run range, or when you changed logic affecting p
  - output base directory
 3. Submit:
  ```bash
- sh submit_veto.sh
+ sh submit_veto.sh```
 
 ## Appendix
-The technote includes an appendix that attaches a reference PDF from Tulasi Subedi:
-D2O_Processed_Data_Variable_Description.pdf.
 
-Note: the processed-data path referenced in that PDF may be obsolete; please use the current paths documented in the technote/readme.
+The technote includes an appendix that attaches a reference PDF from Tulasi Subedi:  
+**D2O_Processed_Data_Variable_Description.pdf**
+
+Note: the processed-data path referenced in that PDF may be obsolete; please use the current paths documented in the technote/README.
 
