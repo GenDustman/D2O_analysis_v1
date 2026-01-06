@@ -35,38 +35,6 @@ The workflow has two stages:
 - `submit_aggregation_only.sh`  
   Utility: re-run **only** the aggregation step on an existing `analysis_*` directory (useful for adjusting binning/fit windows/plot styling without reprocessing runs).
 
-## Expected output structure
-
-Running `submit_veto.sh` produces:
-
-analysis_<start>-<end><M1/M2><timestamp>/
-code/ # snapshot of python scripts (reproducibility)
-subjob_<job_start>-<job_end>/
-run<run><timestamp>/
-time_length.json
-histograms/
-cuthist/
-lowlight/
-aggregated_delta_t.npy
-aggregated_total_pe.npy
-aggregated_multiplicity.npy
-aggregated_sipm_area_array.pkl
-aggregated_pe_trig2.pkl
-aggregated_pe_trig2_or_34.pkl
-aggregated_low_light_hists.pkl
-aggregated_thin_veto_hists.pkl # if enabled
-aggregated_brn_channel_data.pkl # if enabled
-subjob_time_length.json
-MASTER_RESULTS/
-aggregated_delta_t<M1/M2>.png
-aggregated_total_pe_<M1/M2>.png
-total_time_length.json
-run_info.txt
-<label>_<M1/M2>veto_efficiency_master.png (+ .pkl)
-<label><M1/M2>low_light_fits.png (+ .pkl)
-<label><M1/M2>_sipm_area_histograms.png (+ .pkl)
-(optional) BRN master plots
-
 
 ## Setup
 
