@@ -68,7 +68,8 @@ Use this when running a **new** run range, or when you changed logic affecting p
  - output base directory
 3. Submit:
  ```bash
- sh submit_veto.sh```
+ sh submit_veto.sh
+```
 
 ## Appendix
 
