@@ -74,7 +74,8 @@ Use this when running a **new** run range, or when you changed logic affecting p
 
 
 ## Appendix
-The technote of this project: [edit technote](https://www.overleaf.com/8668822666tgwbrgxvmqhm#cc11df), **D2O Analysis Pipeline Documentation.pdf**
+The technote of this project: [edit technote](https://www.overleaf.com/8668822666tgwbrgxvmqhm#cc11df), **D2O Analysis Pipeline Documentation.pdf**.
+
 The technote includes an appendix that attaches a reference PDF from Tulasi Subedi:  
 **D2O_Processed_Data_Variable_Description.pdf**
 
